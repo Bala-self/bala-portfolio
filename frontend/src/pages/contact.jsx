@@ -22,7 +22,7 @@ const [status, setStatus] = useState('idle')
   const handleSubmit = async () => {
     setStatus('sending')
     try {
-      const res = await axios.post('http://localhost:4000/contact', { name, email, message });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/contact`, { name, email, message });
       if (res.data.message === 'success') {
         setStatus('success')
         setTimeout(() => setStatus('idle'), 3000)

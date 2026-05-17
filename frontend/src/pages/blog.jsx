@@ -44,7 +44,7 @@ const Blogs = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await axios.get('http://localhost:4000/blogs')
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/blogs`)
         setPosts(res.data)
       } catch (error) {
         console.error('Error fetching blogs:', error)
@@ -58,7 +58,7 @@ const Blogs = () => {
     if (!subject || !text) return
     setStatus('saving')
     try {
-      const res = await axios.post('http://localhost:4000/blogs', { subject, text, uid: currentUser.uid })
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/blogs`, { subject, text, uid: currentUser.uid })
       setPosts([res.data, ...posts])
       setSubject('')
       setText('')
@@ -74,7 +74,7 @@ const Blogs = () => {
   const handleLike = async (id, index) => {
     if (!id) return
     try {
-      const res = await axios.put(`http://localhost:4000/blogs/${id}/like`)
+      const res = await axios.put(`${import.meta.env.VITE_API_URL}/blogs/${id}/like`)
       const updated = [...posts]
       updated[index].likes = res.data.likes
       setPosts(updated)
@@ -86,7 +86,7 @@ const Blogs = () => {
   const handleDelete = async (id, index) => {
     if (!id) return
     try {
-      await axios.delete(`http://localhost:4000/blogs/${id}`, { data: { uid: currentUser.uid } })
+      await axios.delete(`${import.meta.env.VITE_API_URL}/blogs/${id}`, { data: { uid: currentUser.uid } })
       const updated = posts.filter((_, i) => i !== index)
       setPosts(updated)
     } catch (error) {
