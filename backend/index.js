@@ -1,8 +1,8 @@
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -14,12 +14,23 @@ mongoose.connect('mongodb://bala:bala9384@ac-9m5lmdw-shard-00-00.iyr8c6m.mongodb
     .then(() => console.log('Connected to MongoDB'))
     .catch((err) => console.error('Error connecting to MongoDB:', err));
 
-// Nodemailer setup
+// Nodemailer setup — credentials from .env
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
-        user: 'balakrishnan.code@gmail.com',
-        pass: 'rjdu phba vzsb btou'
+        user:"balakrishnan.code@gmail.com",
+        pass: "rjdu phba vzsb btou"
+    }
+});
+
+// Verify transporter on startup
+transporter.verify((error) => {
+    if (error) {
+        console.error('Mailer config error:', error.message);
+    } else {
+        console.log('Mailer ready');
     }
 });
 
@@ -37,9 +48,9 @@ app.post('/contact', async (req, res) => {
     const { name, email, message } = req.body;
 
     const mailOptions = {
-        from: 'balakrishnan.code@gmail.com',
+        from: `"Portfolio Contact" <${"balakrishnan.code@gmail.com"}>`,
         replyTo: email,
-        to: 'balakrishnan.code@gmail.com',
+        to: "balakrishnan.code@gmail.com"
         subject: `Contact Form: ${name}`,
         text: `Message from ${name} (${email}):\n\n${message}`
     };
@@ -76,7 +87,7 @@ const blogSchema = new mongoose.Schema({
 });
 const Blog = mongoose.model('Blog', blogSchema);
 
-// Admin UID 
+// Admin UID
 const ADMIN_UID = "2miqxfYbuqTYrCxI76z5EAlNkn62";
 
 // Middleware to check admin
